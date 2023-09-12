@@ -35,13 +35,14 @@ public class Resilience4jController {
     private CircuitBreakerRegistry circuitBreakerRegistry;
 
     @GetMapping(value = "/app")
-    public ResponseEntity<String> getName() {
+    public ResponseEntity<String> app() {
         String result;
-        String cbName = "test-get-name";
+        String cbName = "test-app";
+
         CircuitBreaker circuitBreaker = cf.create(cbName);
         result = circuitBreaker.run(
                 () -> restApi.getForEntity("http://localhost:3001/api/name", String.class).getBody(),
-                (throwable) -> throwable.getMessage()
+                (throwable) -> throwable.getLocalizedMessage()
         );
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -65,7 +66,8 @@ public class Resilience4jController {
         for (Map.Entry<String, Object> entry : cbHealth.entrySet()) {
             if (entry.getKey().equals(name)) {
                 Health value = (Health) entry.getValue();
-                return value.getStatus().toString().equals("UP") || value.getStatus().toString().equals("CIRCUIT_HALF_OPEN");
+                return value.getStatus().toString().equals("UP")
+                        || value.getStatus().toString().equals("CIRCUIT_HALF_OPEN");
             }
         }
         return true;

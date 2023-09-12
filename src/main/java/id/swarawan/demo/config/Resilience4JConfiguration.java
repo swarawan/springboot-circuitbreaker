@@ -26,11 +26,11 @@ public class Resilience4JConfiguration {
                 .minimumNumberOfCalls(10)
                 .slowCallRateThreshold(30)
                 .slowCallDurationThreshold(Duration.ofSeconds(3))
-                .waitDurationInOpenState(Duration.ofSeconds(20))
+                .waitDurationInOpenState(Duration.ofSeconds(5))
                 .build();
 
         TimeLimiterConfig timeLimiterConfig = TimeLimiterConfig.custom()
-                .timeoutDuration(Duration.ofSeconds(30))
+                .timeoutDuration(Duration.ofSeconds(4))
                 .build();
 
         return factory -> factory.configureDefault(id -> new Resilience4JConfigBuilder(id)
